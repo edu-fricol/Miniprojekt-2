@@ -11,8 +11,9 @@ import json
 
 def ladda_highscore(filnamn="highscore.json"):
     try:
-        with open("highscore.json", "r", encoding="utf-8") as fil:
+        with open(filnamn, "r", encoding="utf-8") as fil:
             highscore_lista = json.load(fil)
+            return highscore_lista
     except FileNotFoundError:
         return []
     except json.JSONDecodeError:
@@ -27,59 +28,77 @@ def spara_highscore(highscore_lista, filnamn="highscore.json"):
 # === SPELMECKANIK ===
 
 def spela_omgang():
-    """
-    Spelar en omgång av Högt/lågt.
-    
-    Returnerar:
-        int: Antalet gissningar som behövdes för att gissa rätt
-    """
-    # TODO: Implementera funktionen
-    # 1. Välj ett slumpmässigt tal mellan 1 och 100 med random.randint()
-    # 2. Skapa en variabel för antal gissningar (börja på 0)
-    # 3. Skapa en while-loop som fortsätter tills spelaren gissar rätt
-    # 4. Inuti loopen: fråga efter gissning, öka räknaren, ge feedback (högt/lågt/rätt)
-    # 5. När spelaren gissar rätt: returnera antalet gissningar
-    pass
+
+    hemligt_tal = random.randint(1, 100)
+    gissningar = 0
+
+    print(" ")
+    print("\n=== NY OMGÅNG ===")
+    print("Välkommen till Högt/lågt-spelet!")
+    print("Jag har valt ett tal mellan 1 och 100. Kan du gissa det?")
+
+    while True:
+        try:
+            gissning = int(input("Skriv din gissning: "))
+        except ValueError:
+            print("Ogiltig inmatning. Vänligen skriv ett heltal.")
+            continue
+
+        gissningar += 1
+        
+        if gissning < hemligt_tal:
+            print("För lågt! Försök igen.")
+        elif gissning > hemligt_tal:
+            print("För högt! Försök igen.")
+        else:
+            print(f"Grattis! Du gissade rätt på {gissningar} gissningar.")
+            return gissningar
 
 
 # === HIGHSCORE-VISNING ===
 
 def visa_highscore(highscore_lista):
-    """
-    Visar highscore-listan sorterad med bästa spelaren först.
-    
-    Parametrar:
-        highscore_lista (list): Listan som ska visas
-    """
-    # TODO: Implementera funktionen
-    # Tips: Kontrollera om listan är tom först
-    # Tips: Sortera med sorted() och key=lambda x: x["gissningar"]
-    # Tips: Använd enumerate() för att numrera spelarna från 1
-    pass
+
+    if not highscore_lista:
+        print("Ingen highscore än. Spela en omgång för att skapa en!")
+        return
+
+    print("=== HIGHSCORE ===")
+    sorted_highscore = sorted(highscore_lista, key=lambda x: x["gissningar"])
+
+    for i, spelare in enumerate(sorted_highscore, start=1):
+        print(f"{i}. {spelare['namn']}: {spelare['gissningar']} gissningar")
 
 
 # === HUVUDPROGRAM ===
 
 def huvudprogram():
-    """
-    Huvudprogrammet som styr menyn och programflödet.
-    """
-    # TODO: Implementera huvudprogrammet
-    # 1. Ladda highscore med ladda_highscore()
-    # 2. Skapa en while-loop som visar menyn
-    # 3. Menyn ska ha alternativen:
-    #    1. Spela ny omgång
-    #    2. Visa highscore
-    #    3. Avsluta
-    # 4. Vid val 1:
-    #    - Anropa spela_omgang() för att få antalet gissningar
-    #    - Fråga efter spelarens namn
-    #    - Skapa en dictionary {"namn": namn, "gissningar": antal}
-    #    - Lägg till i highscore-listan
-    #    - Spara med spara_highscore()
-    # 5. Vid val 2: anropa visa_highscore()
-    # 6. Vid val 3: avsluta loopen
-    pass
+
+    highscore_lista = ladda_highscore()
+
+    while True:
+        print("\n=== MENY ===")
+        print("1. Spela ny omgång")
+        print("2. Visa highscore")
+        print("3. Avsluta")
+
+        val = input("Välj ett alternativ (1-3): ")
+
+        if val == "1":
+            gissningar = spela_omgang()
+            namn = input("Ange ditt namn för highscore: ")
+            highscore_lista.append({"namn": namn, "gissningar": gissningar})
+            spara_highscore(highscore_lista)
+
+        elif val == "2":
+            visa_highscore(highscore_lista)
+
+        elif val == "3":
+            print("Tack för att du spelade! Hej då!")
+            break
+
+        else:
+            print("Ogiltigt val. Vänligen välj 1, 2 eller 3.")
 
 
 # Starta programmet om filen körs direkt

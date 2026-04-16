@@ -1,2 +1,5 @@
 13/3-26
 Skapat funktion för att ladda highscore från json fil och spara highscore.
+
+16/3-26
+Gjort klart resten av spelet och även lagt till så att det finns mellanrum mellan de nya omgångarna.
