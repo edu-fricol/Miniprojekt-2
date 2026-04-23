@@ -3,3 +3,6 @@ Skapat funktion för att ladda highscore från json fil och spara highscore.
 
 16/3-26
 Gjort klart resten av spelet och även lagt till så att det finns mellanrum mellan de nya omgångarna.
+
+23/4-26
+Gjort klart resterande av utmaningarna. Hade tydligen redan gjort validering sedan innan. Testat spelet och det funkar.

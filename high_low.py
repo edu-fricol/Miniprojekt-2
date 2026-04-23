@@ -29,13 +29,31 @@ def spara_highscore(highscore_lista, filnamn="highscore.json"):
 
 def spela_omgang():
 
-    hemligt_tal = random.randint(1, 100)
+    print(" ")
+    print("\n=== SVÅRIGHETSGRADER ===")
+    print("\nVälj svårighetsgrad:")
+    print("1. Lätt (1-50)")
+    print("2. Måttlig (1-100)")
+    print("3. Svår (1-200)")
+    val = input("Ange svårighetsgrad (1-3): ")
+
+    if val == "1":
+        max_tal = 50
+    elif val == "2":
+        max_tal = 100
+    elif val == "3":
+        max_tal = 200
+    else:
+        print("Ogiltigt val. Välj 1, 2 eller 3.")
+        return
+
+    hemligt_tal = random.randint(1, max_tal)
     gissningar = 0
 
     print(" ")
     print("\n=== NY OMGÅNG ===")
     print("Välkommen till Högt/lågt-spelet!")
-    print("Jag har valt ett tal mellan 1 och 100. Kan du gissa det?")
+    print(f"\nJag har valt ett tal mellan 1 och {max_tal}. Kan du gissa det?")
 
     while True:
         try:
@@ -45,6 +63,10 @@ def spela_omgang():
             continue
 
         gissningar += 1
+
+        skillnad = abs(gissning - hemligt_tal)
+        if skillnad < 5 and gissning != hemligt_tal:
+            print("Du är nära!")
         
         if gissning < hemligt_tal:
             print("För lågt! Försök igen.")
@@ -62,13 +84,13 @@ def visa_highscore(highscore_lista):
     if not highscore_lista:
         print("Ingen highscore än. Spela en omgång för att skapa en!")
         return
-
-    print("=== HIGHSCORE ===")
     sorted_highscore = sorted(highscore_lista, key=lambda x: x["gissningar"])
-
-    for i, spelare in enumerate(sorted_highscore, start=1):
+    print("\n=== TOPP 5 ===")
+    for i, spelare in enumerate(sorted_highscore[:5], start=1):
         print(f"{i}. {spelare['namn']}: {spelare['gissningar']} gissningar")
-
+    
+    snitt = sum(entry["gissningar"] for entry in highscore_lista) / len(highscore_lista)
+    print(f"\nGenomsnittliga gissningar: {snitt:.2f}")
 
 # === HUVUDPROGRAM ===
 
@@ -88,7 +110,14 @@ def huvudprogram():
             gissningar = spela_omgang()
             namn = input("Ange ditt namn för highscore: ")
             highscore_lista.append({"namn": namn, "gissningar": gissningar})
+            highscore_lista = sorted(highscore_lista, key=lambda x: x["gissningar"])[:10]
             spara_highscore(highscore_lista)
+            igen = input("Vill du spela igen? (j/n): ")
+            if igen.lower() != "j":
+                print("Tack för att du spelade! Hej då!")
+                break
+
+
 
         elif val == "2":
             visa_highscore(highscore_lista)
